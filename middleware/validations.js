@@ -2,15 +2,24 @@
 
 
 
-// Validate Registrstion
+// Validate Registration
 const validateRegistration = async(req, res, next)=>{
-    const { firstName, lastName, email, password } = req.body
+    const { firstName, lastName, email, password, budgetLimit } = req.body
     
     const errors = []
 
     if(!email){
         errors.push("Please add email")
     }
+
+    if(!password){
+        errors.push("Please add your password")
+    }
+
+    if(!budgetLimit){
+        errors.push("Please add your budget limit")
+    }
+
 
     if(password.length < 8){
         errors.push("Minimum of eight characters required for password.")
@@ -34,12 +43,17 @@ const validateLogin = async(req, res, next)=>{
     if(!email){
         errors.push("Please add your email")
     } else if(!validEmail(email)){
-        errors.push("Email format is incorrect")
+        errors.push("Incorrect email format")
     }
 
     if(!password){
         errors.push("Please add your password")
     }
+
+    if(password.length < 8){
+        errors.push("Minimum of eight characters required for password.")
+    }
+
 
     if(errors.length > 0){
         return res.status(400).json({message: errors})
