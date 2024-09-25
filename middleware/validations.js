@@ -1,5 +1,26 @@
+const jwt = require('jsonwebtoken');
+const User = require('../model/users');
 
+const authenticate = (req, res, next) => {
 
+    try {
+        const token = req.header('Authorization');
+        console.log(token);
+        const user = jwt.verify(token, 'secretkey');
+        console.log('userID >>>> ', user.userId)
+        User.findByPk(user.userId).then(user => {
+
+            req.user = user; ///ver
+            next();
+        })
+
+      } catch(err) {
+        console.log(err);
+        return res.status(401).json({success: false})
+        // err
+      }
+
+}
 
 
 // Validate Registration
@@ -9,7 +30,9 @@ const validateRegistration = async(req, res, next)=>{
     const errors = []
 
     if(!email){
-        errors.push("Please add email")
+        errors.push("Please add your email")
+    } else if(!validateEmail(email)){
+        errors.push("Incorrect email format")
     }
 
     if(!password){
@@ -42,7 +65,7 @@ const validateLogin = async(req, res, next)=>{
 
     if(!email){
         errors.push("Please add your email")
-    } else if(!validEmail(email)){
+    } else if(!validateEmail(email)){
         errors.push("Incorrect email format")
     }
 
@@ -64,7 +87,9 @@ const validateLogin = async(req, res, next)=>{
 }
 
 // Validate Email With Regex
-const validEmail = (email) => {
+
+
+const validateEmail = (email) => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
@@ -73,6 +98,7 @@ const validEmail = (email) => {
 module.exports = {
     validateRegistration,
     validateLogin,
-    validEmail
+    validateEmail,
+    authenticate
     
 }
