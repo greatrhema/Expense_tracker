@@ -3,10 +3,10 @@ const cors = require('cors');
 const connectToDatabase = require("./db")
 const Users = require("./model/users");
 const dotenv = require("dotenv").config();
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const general = require("./routes/general")
-const { validateRegistration, validateLogin, authenticate } = require("./middleware/validations");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const { authenticateUser } = require("./middleware/validations");
 
 const app = express();
 
@@ -28,48 +28,8 @@ app.get("/", (req, res)=>{
     return res.status(200).json({message: "Welcome to Expense Tracker Project!!!"})
 })
 
-//sign up
-app.use(general)
-
-
-//Query user
-app.get("/user:id", async (req, res)=>{
-
-
-
-    try {
-        const {id} = req.params
-
-        const user = await Users.findById(id)
-
-        return res.status(200).json({
-            message: "Successful",
-            user
-        })
-
-
-    } catch (error) {
-        return res.status(500).json({message: error.message})
-        
-    }
-
-    }) 
-
-
-
-
-
-//Logout
-app.post("/logout", async (req, res) => {
-
-    try {
-        res.clearCookie('refreshToken')
-        return res.json({msg: "Logged out!"})
-
-    } catch (err) {
-        return res.status(400).json({msg: err.message})
-    }
-})
+//router
+app.use(general,)
 
 
 

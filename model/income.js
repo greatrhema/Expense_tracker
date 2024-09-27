@@ -1,25 +1,12 @@
-const mongoose = require("mongoose")
+const mongoose = require('mongoose');
 
-const orderSchema = new mongoose.Schema({
-    userID: {type: Number,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true}
-},
-    // firstName: {type: String, require:true},
-    // lastName: {type: String, require:true},
-    // email: {type: String, require:true},
-    // password: {type: String, require:true},
-    // dateOfBirth: {type: Date, require:true}
-// },
-{
-    source: {type:String, require:true},
-    amount: {type: Number, require:true},
-    date: {type: Date, require:true},
+const incomeSchema = new mongoose.Schema({
+    source: { type: String, required: true },
+    amount: { type: Number, required: true },
+    date: { type: Date, default: Date.now },
+    userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+});
 
-//    timestamps: true
-})
+const Income = mongoose.model('Income', incomeSchema);
 
-const Order = new mongoose.model("Order", orderSchema)
-
-module.exports = Order;
+module.exports = Income;
